@@ -1,0 +1,44 @@
+name: Kernel Build                                    
+on:
+  push:
+    branches:
+      - main  # Change to your branch if needed
+
+jobs:                                                   
+  build:
+    runs-on: ubuntu-latest
+    steps:                                                  
+      - name: Checkout Repository
+        uses: actions/checkout@v4  # Updated to v4 for better compatibility
+
+      - name: Install Dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y build-essential flex bison libssl-dev bc
+
+      - name: Download Linux Kernel Source
+        run: |
+          git clone --depth=1 https://github.com/torvalds/linux.git kernel_source
+
+      - name: Configure Kernel
+        run: |
+          cd kernel_source
+          make defconfig  # Replace with your custom config if needed
+
+      - name: Compile Kernel
+        run: |
+          cd kernel_source
+          make -j$(nproc)
+
+      - name: Upload Kernel Artifacts
+        uses: actions/upload-artifact@v4  # Updated to v4
+        with:
+          name: built-kernel
+          path: kernel_source/arch/arm/boot/Image  # Adjust path for architecture
+
+      - name: Release Kernel
+        uses: softprops/action-gh-release@v1
+        with:
+          files: kernel_source/arch/arm/boot/Image
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Ensure this secret is set
