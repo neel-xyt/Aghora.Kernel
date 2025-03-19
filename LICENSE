@@ -1,0 +1,30 @@
+GNU GENERAL PUBLIC LICENSE  
+Version 2, June 1991  
+
+Copyright (C) 2024 Neel-Xyt &
+Aghora-OS
+
+Everyone is permitted to copy and distribute verbatim copies  
+of this license document, but changing it is not allowed.  
+
+### Preamble  
+The GNU General Public License is a free, copyleft license for software and other kinds of works.  
+
+The main goal of this license is to ensure that software remains free for all users. You are free to use, modify, and distribute this software under the conditions outlined below.  
+
+### Terms and Conditions for Copying, Distribution, and Modification  
+1. **You may copy and distribute verbatim copies of the Program's source code** as you receive it, in any medium, provided that you conspicuously and appropriately publish a valid copyright notice and disclaimer.  
+2. **You may modify your copy or copies of the Program** or any portion of it, and distribute such modifications under the terms of this License, provided that you also meet these conditions:  
+   - a) The modified work must carry prominent notices stating that you changed the files and the date of any changes.  
+   - b) You must cause any modified files to carry prominent notices stating that you changed the file and the date of change.  
+3. **You may distribute the Program (or a work based on it) in object code or executable form** under the same terms as above, provided that you also distribute the complete corresponding source code.  
+4. **You may not impose any further restrictions on the recipients' exercise of the rights granted herein.**  
+5. **There is no warranty for the Program, to the extent permitted by applicable law.** The software is provided "as-is," without any express or implied warranty.  
+
+For full details, refer to the official **GPL-2.0 license**:  
+https://www.gnu.org/licenses/old-licenses/gpl-2.0.html  
+
+---
+
+**Karnal - A Linux Kernel for Aghora-OS**  
+Maintained by **Neel-Xyt** under the **Aghora-OS Foundation**
