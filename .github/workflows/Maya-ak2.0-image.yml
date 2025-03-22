@@ -43,10 +43,19 @@ jobs:
           name: built-kernel
           path: kernel_source/arch/arm/boot/*
 
+      - name: Create or Update Git Tag
+        run: |
+          TAG_NAME="Maya-ak2.0"
+          git tag -f $TAG_NAME
+          git push origin $TAG_NAME --force
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Release Kernel
         if: success()
         uses: softprops/action-gh-release@v1
         with:
+          tag_name: "Maya-ak2.0"
           files: kernel_source/arch/arm/boot/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
