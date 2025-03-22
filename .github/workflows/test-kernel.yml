@@ -1,0 +1,60 @@
+name: Test Aghora Kernel in QEMU
+
+on: [push, pull_request]
+
+jobs:
+  test_kernel:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y qemu-system-x86 wget
+
+      - name: Download Aghora Kernel
+        run: |
+          wget --content-disposition https://github.com/neel-xyt/Aghora.Kernel/releases/download/au1.0/Aghora-k-image
+          ls -lah
+
+      - name: Create Root Filesystem (Minimal)
+        run: |
+          dd if=/dev/zero of=rootfs.img bs=1M count=512
+          mkfs.ext4 rootfs.img
+          mkdir -p rootfs
+          sudo mount -o loop rootfs.img rootfs
+          sudo debootstrap --arch=amd64 stable rootfs
+          sudo umount rootfs
+
+      - name: Boot Kernel and Check System
+        run: |
+          set -e  # Exit on error
+          
+          echo "Starting QEMU..."
+          qemu-system-x86_64 \
+            -kernel Aghora-k-image \
+            -append "console=ttyS0 root=/dev/sda rw init=/bin/sh" \
+            -hda rootfs.img \
+            -nographic \
+            -serial mon:stdio \
+            -monitor none \
+            | tee qemu-output.txt &
+          
+          sleep 10  # Wait for the kernel to boot
+          
+          if grep -q "Kernel panic" qemu-output.txt; then
+            echo "❌ Kernel boot failed!"
+            exit 1
+          fi
+
+          if grep -q "Linux version" qemu-output.txt; then
+            echo "✅ Kernel boot successful!"
+          else
+            echo "❌ Kernel did not boot properly!"
+            exit 1
+          fi
+
+      - name: Upload QEMU Logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: qemu-logs
+          path: qemu-output.txt
