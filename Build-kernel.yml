@@ -1,0 +1,52 @@
+name: Maya-ak2.0-image                                    
+on:
+  push:
+    branches:
+      - main  
+
+jobs:                                                   
+  build:
+    runs-on: ubuntu-latest
+    steps:                                                  
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Install Dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y build-essential flex bison libssl-dev bc \
+            gcc-arm-linux-gnueabi binutils-arm-linux-gnueabi wget
+
+      - name: Download Linux Kernel Source
+        run: |
+          git clone --depth=1 https://github.com/torvalds/linux.git kernel_source
+
+      - name: Download .config
+        run: |
+          cd kernel_source
+          wget https://raw.githubusercontent.com/neel-xyt/Aghora.Kernel/main/.config
+
+      - name: Configure Kernel
+        run: |
+          cd kernel_source
+          make ARCH=arm CROSS_COMPILE=arm-linux-gnueabi- olddefconfig  
+
+      - name: Compile Kernel
+        run: |
+          cd kernel_source
+          make ARCH=arm CROSS_COMPILE=arm-linux-gnueabi- -j$(nproc)
+
+      - name: Upload Kernel Artifacts
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: built-kernel
+          path: kernel_source/arch/arm/boot/*
+
+      - name: Release Kernel
+        if: success()
+        uses: softprops/action-gh-release@v1
+        with:
+          files: kernel_source/arch/arm/boot/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
